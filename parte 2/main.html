@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A-Frame Scene with GLTF Models</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <!-- Ambiente -->
+    <a-sky color="#87CEEB"></a-sky>
+    <a-plane rotation="-90 0 0" width="100" height="100" color="#7CFC00"></a-plane>
+
+    <!-- Modelo do Carro com ID -->
+    <a-entity 
+      id="car"
+      gltf-model="./toon__porsche_911_gt3_rs_2018.glb"
+      position="-35 5 15"
+      rotation="0 18 0"
+      scale="2 2 2"
+      animation="property: position; to: -50 5 -15; dur: 2000; startEvents: carMove">
+    </a-entity>
+    
+    <!-- Modelo da Estrada -->
+    <a-entity 
+      gltf-model="./road_with_street_lights_-_voxel_art.glb"
+      position="1 -40 -6"
+      rotation="0 200 0"
+      scale="2 2 2">
+    </a-entity>
+
+    <!-- Camera Rig com câmera e cursor -->
+    <a-entity id="cameraRig" rotation="0 200 0">
+      <a-entity camera look-controls wasd-controls position="37 7 10">
+        <!-- Cursor -->
+        <a-entity 
+          cursor="fuse: false" 
+          raycaster="objects: .clickable" 
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner:0.02; radiusOuter:0.03"
+          material="color: black; shader: flat;">
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
+    <!-- Botão com som -->
+    <a-entity id="button"
+              class="clickable"
+              gltf-model="./car_keys.glb"
+              geometry="primitive: box; width: 1; height: 1; depth: 1"
+              material="color: red"
+              position="-32 7 10"
+              rotation="75 -30 80"
+              sound="src: ./honda-engine-start-and-rev-28544.mp3; volume: 100; on: none">
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const button = document.getElementById('button');
+    const car = document.getElementById('car');
+
+    button.addEventListener('click', () => {
+      button.components.sound.playSound();
+      
+      // Após um curto intervalo, inicia o movimento do carro
+      setTimeout(() => {
+        car.emit('carMove');
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
